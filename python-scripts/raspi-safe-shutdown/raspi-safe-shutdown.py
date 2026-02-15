@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#added some features, buzzer alarm on power down, driven by gpio 27 to npn
 
 import os
 import sys
@@ -8,6 +9,8 @@ import RPi.GPIO as GPIO
 
 SHUTDOWN_BTN = 11  # GPIO_GEN0 (BCM #17)
 SHUTDOWN_LED = 12  # GPIO_GEN1 (BCM #18)
+POWER_CHECK = 15 # (BCM #22)
+POWER_ALARM_BUZZER = 13 (BCM #27)
 T_CHECK = 1000  # in milliseconds
 T_HOLD = 5000  # in milliseconds
 T_BLINK = 100  # in milliseconds
@@ -22,7 +25,14 @@ def main() -> int:
 
     GPIO.setup(SHUTDOWN_BTN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
     GPIO.setup(SHUTDOWN_LED, GPIO.OUT)
+    GPIO.setup(POWER_CHECK, GPIO.IN)
+    
     GPIO.output(SHUTDOWN_LED, GPIO.LOW)
+    GPIO.setup(POWER_ALARM_BUZZER, GPIO.OUT)
+    GPIO.output(POWER_ALARM_BUZZER, GPIO.LOW)
+    
+    
+    
 
     while True:
         if GPIO.input(SHUTDOWN_BTN):
@@ -46,6 +56,18 @@ def main() -> int:
             else:
                 print('Button released. Waiting again for the user to press',
                       'the shutdown button')
+       
+        if GPIO.input(POWER_CHECK)==0:
+            print('Power only from backup battery, shutting down:')
+            for _ in range(BLINK_COUNT):
+                    GPIO.output(POWER_ALARM_BUZZER, GPIO.LOW)
+                    time.sleep(T_BLINK / 1000.0)
+                    GPIO.output(POWER_ALARM_BUZZER, GPIO.HIGH)
+                    time.sleep(T_BLINK / 1000.0)
+            #os.execvp('poweroff', ['poweroff'])
+        
+        
+        
         time.sleep(T_CHECK / 1000.0)
 
 

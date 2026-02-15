@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# raspi-safe-shutdown.py
 #added some features, buzzer alarm on power down, driven by gpio 27 to npn
 
 import os
@@ -10,7 +11,7 @@ import RPi.GPIO as GPIO
 SHUTDOWN_BTN = 11  # GPIO_GEN0 (BCM #17)
 SHUTDOWN_LED = 12  # GPIO_GEN1 (BCM #18)
 POWER_CHECK = 15 # (BCM #22)
-POWER_ALARM_BUZZER = 13 (BCM #27)
+POWER_ALARM_BUZZER = 13 # (BCM #27)
 T_CHECK = 1000  # in milliseconds
 T_HOLD = 5000  # in milliseconds
 T_BLINK = 100  # in milliseconds
